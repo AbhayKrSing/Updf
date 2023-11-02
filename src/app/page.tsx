@@ -39,13 +39,106 @@ export default function Home() {
           </Button>
         </Link> */}
       </MaxWidthWrapper>
+      {/* landing view */}
       <MaxWidthWrapper>
         <div className="relative isolate">
           <div
             aria-hidden="true"
-            className="absolute top-0 -z-10 w-[100%] bg-gradient-to-r from-indigo-500 via-purple-500  to-pink-500 -translate-x-2 rotate-3 pointer-events-none aspect-[1155/578] overflow-hidden blur-3xl transform-gpu opacity-20"
+            className="absolute top-0 -z-10 w-[100%] bg-gradient-to-r from-pink-500 via-purple-500  to-pink-500 -translate-x-2 rotate-3 pointer-events-none aspect-[1155/578] overflow-hidden blur-3xl transform-gpu opacity-10"
+            // style={{
+            //   clipPath:
+            //     "polygon(0% 15%, 74% 71%, 15% 0%, 85% 0%, 0 63%, 100% 15%, 100% 85%, 64% 28%, 84% 84%, 15% 100%, 44% 61%, 0% 85%)",
+            // }}  //not working
           ></div>
-          <div>Image dalni hai idhar</div>
+          <div className={cn("backdrop-blur-sm bg-zinc-500/10 p-2 rounded-lg")}>
+            <img src="assets/shadcn.png" alt="img" />
+          </div>
+        </div>
+      </MaxWidthWrapper>
+      {/*feature section */}
+      <MaxWidthWrapper>
+        <h1 className="max-w-4xl text-4xl sm:text-5xl  font-bold mt-20 mb-6">
+          Start chatting in minutes
+        </h1>
+        <p className="mt-4 mb-4 text-zinc-700 text-lg">
+          Chating with your pdf document is never easier than Updf
+        </p>
+
+        {/* steps */}
+        <ol className="sm:flex sm:space-x-6">
+          <li className="flex-1 flex-col  my-4 sm:border-t-2 sm:border-l-0 border-l-2 ">
+            <div className="sm:pl-0 pl-3 space-y-2">
+              <p></p>
+              <p className="text-xs text-red-500 mt-2">Step 1</p>
+              <div className="text-lg font-medium">Sign up for an account</div>
+              <p className="text-sm">
+                Either starting out with a free plan or choose our&nbsp;
+                <Link
+                  href={"/preplan"}
+                  className="text-red-500 underline underline-offset-2"
+                >
+                  proplan
+                </Link>
+              </p>
+            </div>
+          </li>
+          <li className="flex-1 flex-col  my-4 sm:border-t-2 sm:border-l-0 border-l-2 ">
+            <div className="sm:pl-0 pl-3 space-y-2">
+              <p></p>
+              <p className="text-xs text-red-500 mt-2">Step 2</p>
+              <div className="text-lg font-medium">Sign up for an account</div>
+              <p className="text-sm">
+                Either starting out with a free plan or choose our&nbsp;
+                <Link
+                  href={"/preplan"}
+                  className="text-red-500 underline underline-offset-2"
+                >
+                  proplan
+                </Link>
+              </p>
+            </div>
+          </li>
+          <li className="flex-1 flex-col  my-4 sm:border-t-2 sm:border-l-0 border-l-2 ">
+            <div className="sm:pl-0 pl-3 space-y-2">
+              <p></p>
+              <p className="text-xs text-red-500 mt-2">Step 3</p>
+              <div className="text-lg font-medium">Sign up for an account</div>
+              <p className="text-sm">
+                Either starting out with a free plan or choose our&nbsp;
+                <Link
+                  href={"/preplan"}
+                  className="text-red-500 underline underline-offset-2"
+                >
+                  proplan
+                </Link>
+              </p>
+            </div>
+          </li>
+          <li></li>
+        </ol>
+      </MaxWidthWrapper>
+      <MaxWidthWrapper>
+        <div className="relative isolate">
+          <div
+            aria-hidden="true"
+            className="absolute top-0 -z-10 w-[100%] bg-gradient-to-r from-pink-500 via-purple-500  to-pink-500 -translate-x-2 rotate-3 pointer-events-none aspect-[1155/578] overflow-hidden blur-3xl transform-gpu opacity-10"
+            // style={{
+            //   clipPath:
+            //     "polygon(0% 15%, 74% 71%, 15% 0%, 85% 0%, 0 63%, 100% 15%, 100% 85%, 64% 28%, 84% 84%, 15% 100%, 44% 61%, 0% 85%)",
+            // }}  //not working
+          ></div>
+          <div
+            className={cn(
+              "backdrop-blur-sm bg-zinc-500/10 p-2 rounded-lg mx-auto"
+            )}
+          >
+            <img
+              src="assets/file-upload-preview.jpg"
+              alt="img"
+              width={1419}
+              className="w-[90%] mx-auto"
+            />
+          </div>
         </div>
       </MaxWidthWrapper>
     </>

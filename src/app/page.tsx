@@ -4,7 +4,11 @@ import "./globals.css";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { Button, buttonVariants } from "@/components/ui/button";
+import { trpc } from "./_trpc/client";
+// import { serverClient } from "./_trpc/serverClient";
 export default function Home() {
+  // const data = await serverClient.getUserName()   //To use in server side (make fn async)
+  // const { data } = trpc.getUserName.useQuery(); //To use in client side(mark use client to use it)
   return (
     <>
       <MaxWidthWrapper

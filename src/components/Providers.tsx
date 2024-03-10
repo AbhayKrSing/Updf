@@ -11,12 +11,12 @@ const Providers = ({ children }: PropsWithChildren) => {
         httpBatchLink({
           url: "http://localhost:3000/api/trpc",
           // You can pass any HTTP headers you wish here
-          async headers() {
-            //Will look at it.(Todo)
-            return {
-              authorization: getAuthCookie(),
-            };
-          },
+          // async headers() {
+          //   //Will look at it.(Todo)
+          //   return {
+          //     authorization: getAuthCookie(),
+          //   };
+          // },
         }),
       ],
     })

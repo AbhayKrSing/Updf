@@ -37,11 +37,6 @@ export default function Home() {
         >
           Get Started <ArrowRight />
         </Link>
-        {/* <Link href={"/dashboard"} target="_blank">
-          <Button>
-            Get Started <ArrowRight />
-          </Button>
-        </Link> */}
       </MaxWidthWrapper>
       {/* landing view */}
       <MaxWidthWrapper>
@@ -49,10 +44,6 @@ export default function Home() {
           <div
             aria-hidden="true"
             className="absolute top-0 -z-10 w-[100%] bg-gradient-to-r from-pink-500 via-purple-500  to-pink-500 -translate-x-2 rotate-3 pointer-events-none aspect-[1155/578] overflow-hidden blur-3xl transform-gpu opacity-10"
-            // style={{
-            //   clipPath:
-            //     "polygon(0% 15%, 74% 71%, 15% 0%, 85% 0%, 0 63%, 100% 15%, 100% 85%, 64% 28%, 84% 84%, 15% 100%, 44% 61%, 0% 85%)",
-            // }}  //not working
           ></div>
           <div className={cn("backdrop-blur-sm bg-zinc-500/10 p-2 rounded-lg")}>
             <img src="assets/shadcn.png" alt="img" />
@@ -126,10 +117,6 @@ export default function Home() {
           <div
             aria-hidden="true"
             className="absolute top-0 -z-10 w-[100%] bg-gradient-to-r from-pink-500 via-purple-500  to-pink-500 -translate-x-2 rotate-3 pointer-events-none aspect-[1155/578] overflow-hidden blur-3xl transform-gpu opacity-10"
-            // style={{
-            //   clipPath:
-            //     "polygon(0% 15%, 74% 71%, 15% 0%, 85% 0%, 0 63%, 100% 15%, 100% 85%, 64% 28%, 84% 84%, 15% 100%, 44% 61%, 0% 85%)",
-            // }}  //not working
           ></div>
           <div
             className={cn(

@@ -18,7 +18,12 @@ const page = () => {
         router.push("/sign-in");
       }
     },
-    retry: true,
+    retry: (failcount, error) => {
+      if (failcount == 3) {
+        return false;
+      }
+      return true;
+    },
     retryDelay: 500,
   });
   return (

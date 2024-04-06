@@ -1,3 +1,5 @@
+import ChatWrapper from "@/components/ChatWrapper";
+import PdfRenderer from "@/components/PdfRenderer";
 import { db } from "@/db";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { notFound, redirect } from "next/navigation";
@@ -26,7 +28,18 @@ const page = async ({ params }: PageProps) => {
     notFound();
   }
 
-  return <div>Your file id is:{fileId}</div>;
+  return (
+    <div className="md:flex justify-center h-[calc(100vh-3.5rem)]">
+      {/* left side PdfRenderer*/}
+      <div className="flex-1 px-4 py-6">
+        <PdfRenderer />
+      </div>
+      {/* Right side ChatWrapper*/}
+      <div className="flex-[0.75] border-t md:border-t-0 md:border-l border-gray-200">
+        <ChatWrapper />
+      </div>
+    </div>
+  );
 };
 
 export default page;

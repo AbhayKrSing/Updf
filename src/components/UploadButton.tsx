@@ -11,10 +11,21 @@ import Dropzone from "react-dropzone";
 import { Cloud, File } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { useState } from "react";
+import { useUploadThing } from "@/lib/uploadthing";
+import { toast } from "./ui/use-toast";
+import { trpc } from "@/app/_trpc/client";
+import { useRouter } from "next/navigation";
 
 const UploadDropzone = () => {
+  const router = useRouter();
   const [uploadProgress, setuploadProgress] = useState<number>(0);
-
+  const { startUpload } = useUploadThing("pdfUploader");
+  const { mutate: startPolling } = trpc.getFile.useMutation({
+    onSuccess: (file) => {
+      router.push(`/dashboard/${file.id}`);
+    },
+    retry: true,
+  });
   const startSimulationProgress = () => {
     setuploadProgress(0);
     const interval = setInterval(() => {
@@ -31,18 +42,31 @@ const UploadDropzone = () => {
   return (
     <Dropzone
       onDrop={async (acceptedFiles) => {
+        //only one file will come because multiple not allowed
         if (acceptedFiles && acceptedFiles[0]) {
           const interval = startSimulationProgress();
-          const data = await new Promise((res, rej) => {
-            //will replace it with Api route used in uploading file..
-            setTimeout(() => {
-              res(10);
-            }, 2000);
-          });
-          // //Todo: uploading file
-          if (data) {
-            setuploadProgress(100);
+          const res = await startUpload(acceptedFiles);
+          if (!res) {
+            toast({
+              variant: "destructive",
+              title: "Something went wrong",
+              description: "Try again",
+            });
+            return;
           }
+          const [fileResponse] = res;
+          const key = fileResponse.key;
+          if (!key) {
+            toast({
+              variant: "destructive",
+              title: "File not uploaded",
+              description: "Try again",
+            });
+            return;
+          }
+          //todo : polling(b/w client and database for file checking)
+          startPolling({ key });
+          setuploadProgress(100);
           clearInterval(interval);
         }
       }}
@@ -53,7 +77,7 @@ const UploadDropzone = () => {
           {...getRootProps()}
           className="h-64 border-2 border-dashed flex flex-col items-center  hover:bg-zinc-100"
         >
-          <input {...getInputProps()} className="h-full" />
+          <input type="file" {...getInputProps()} className="h-full" />
           <div className="my-auto w-[47%]">
             <label htmlFor="drop-zonefile" className="mx-auto"></label>
             <Cloud className="mx-auto" />

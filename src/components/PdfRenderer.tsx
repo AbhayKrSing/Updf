@@ -56,6 +56,7 @@ const PdfRenderer = ({ url }: PdfRendererProps) => {
             onClick={() => {
               setcurrentPage((prev) => {
                 if (prev > 1) {
+                  setValue("page", (prev - 1).toString());
                   return prev - 1;
                 }
                 return 1;
@@ -88,6 +89,7 @@ const PdfRenderer = ({ url }: PdfRendererProps) => {
             onClick={() => {
               setcurrentPage((prev) => {
                 if (prev < TotalPages) {
+                  setValue("page", (prev + 1).toString());
                   return prev + 1;
                 }
                 return TotalPages;

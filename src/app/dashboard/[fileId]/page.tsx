@@ -17,7 +17,7 @@ const page = async ({ params }: PageProps) => {
     redirect(`/auth-callback?origin=dashboard/${fileId}`);
   }
   //make database call
-  const file = db.file.findFirst({
+  const file = await db.file.findFirst({
     where: {
       id: fileId,
       userId: user.id,
@@ -29,10 +29,10 @@ const page = async ({ params }: PageProps) => {
   }
 
   return (
-    <div className="md:flex justify-center h-[calc(100vh-3.5rem)]">
+    <div className=" md:flex justify-center h-[calc(100vh-3.5rem)]">
       {/* left side PdfRenderer*/}
       <div className="flex-1 px-4 py-6">
-        <PdfRenderer />
+        <PdfRenderer url={file.url} />
       </div>
       {/* Right side ChatWrapper*/}
       <div className="flex-[0.75] border-t md:border-t-0 md:border-l border-gray-200">

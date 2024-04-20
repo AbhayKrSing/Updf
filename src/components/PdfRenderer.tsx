@@ -10,6 +10,10 @@ import { useResizeDetector } from "react-resize-detector";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { cn } from "@/lib/utils";
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   "pdfjs-dist/build/pdf.worker.min.js",
   import.meta.url
@@ -21,12 +25,32 @@ const PdfRenderer = ({ url }: PdfRendererProps) => {
   const { width, height, ref } = useResizeDetector();
   const [TotalPages, setTotalPages] = useState<number>(0);
   const [currentPage, setcurrentPage] = useState<number>(1);
+  const customPageValidator = z.object({
+    page: z.string().refine((num) => {
+      //refine kiya hai idhar
+      return Number(num) >= 1 && Number(num) <= TotalPages;
+    }),
+  });
+  type TcustomPageValidator = z.infer<typeof customPageValidator>;
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setValue,
+  } = useForm<TcustomPageValidator>({
+    defaultValues: {
+      page: "1",
+    },
+    resolver: zodResolver(customPageValidator),
+  });
+
   return (
     <div className="flex flex-col w-full h-screen border border-zinc-300 shadow-lg">
       <div className="flex items-center justify-between p-4 border-b border-zinc-300">
         <div className="flex gap-1 items-center">
           <Button
             variant={"ghost"}
+            aria-label="previous page"
             className="w-12"
             disabled={currentPage === 1}
             onClick={() => {
@@ -40,10 +64,25 @@ const PdfRenderer = ({ url }: PdfRendererProps) => {
           >
             <ChevronDown />
           </Button>
-          <Input className="w-12 h-10" />
+          <Input
+            className={cn(
+              "w-12 h-10",
+              errors.page && " focus-visible:ring-red-500"
+            )}
+            {...register("page")}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                handleSubmit(({ page }) => {
+                  setcurrentPage(Number(page));
+                  setValue("page", page);
+                })();
+              }
+            }}
+          />
           <p className="text-lg">/{TotalPages ? TotalPages : "x"}</p>
           <Button
             variant={"ghost"}
+            aria-label="next page"
             className="w-12"
             disabled={currentPage === TotalPages}
             onClick={() => {

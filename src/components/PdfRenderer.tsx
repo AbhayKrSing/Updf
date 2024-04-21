@@ -14,6 +14,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { cn } from "@/lib/utils";
+import SimpleBar from "simplebar-react";
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   "pdfjs-dist/build/pdf.worker.min.js",
   import.meta.url
@@ -103,33 +104,35 @@ const PdfRenderer = ({ url }: PdfRendererProps) => {
       <div
         className="flex-1 relative max-h-max overflow-auto bg-zinc-200"
         ref={ref}
-        style={{ scrollbarWidth: "none" }}
       >
-        <Document
-          file={url}
-          className="w-full h-full flex justify-center"
-          loading={
-            <div className="flex justify-center">
-              <Loader2 className="animate-spin w-6 h-6" />
-            </div>
-          }
-          onLoadError={() => {
-            toast({
-              title: "pdf not loaded",
-              description: "Try again",
-              variant: "destructive",
-            });
-          }}
-          onLoadSuccess={({ numPages }) => {
-            setTotalPages(numPages);
-          }}
-        >
-          <Page
-            width={width ? width : 1}
-            pageNumber={currentPage}
-            className="shadow-lg w-auto h-auto max-w-full max-h-full"
-          />
-        </Document>
+        <SimpleBar autoHide={false}>
+          <Document
+            file={url}
+            className="w-full h-full flex justify-center"
+            loading={
+              <div className="flex justify-center">
+                <Loader2 className="animate-spin w-6 h-6" />
+              </div>
+            }
+            onLoadError={() => {
+              toast({
+                title: "pdf not loaded",
+                description: "Try again",
+                variant: "destructive",
+              });
+            }}
+            onLoadSuccess={({ numPages }) => {
+              setTotalPages(numPages);
+            }}
+          >
+            <Page
+              width={width ? width : 1}
+              pageNumber={currentPage}
+              scale={1}
+              className="shadow-lg w-auto h-auto max-w-full"
+            />
+          </Document>
+        </SimpleBar>
       </div>
     </div>
   );

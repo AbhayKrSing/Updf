@@ -29,7 +29,8 @@ const page = async ({ params }: PageProps) => {
   }
 
   return (
-    <div className=" md:flex justify-center h-[calc(100vh-3.5rem)]">
+    <div className=" md:flex justify-center">
+      {/* h-[calc(100vh-3.5rem)] */}
       {/* left side PdfRenderer*/}
       <div className="flex-1 px-4 py-6">
         <PdfRenderer url={file.url} />

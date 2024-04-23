@@ -4,7 +4,13 @@ import "react-pdf/dist/Page/AnnotationLayer.css";
 import "react-pdf/dist/Page/TextLayer.css";
 import { Document, Page } from "react-pdf";
 import { pdfjs } from "react-pdf";
-import { ChevronDown, ChevronUp, Loader2 } from "lucide-react";
+import {
+  ChevronDown,
+  ChevronUp,
+  Loader2,
+  RotateCw,
+  Search,
+} from "lucide-react";
 import { toast } from "./ui/use-toast";
 import { useResizeDetector } from "react-resize-detector";
 import { Button } from "./ui/button";
@@ -15,6 +21,14 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { cn } from "@/lib/utils";
 import SimpleBar from "simplebar-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
+import PDFfullscreen from "./PDFfullscreen";
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   "pdfjs-dist/build/pdf.worker.min.js",
   import.meta.url
@@ -26,6 +40,8 @@ const PdfRenderer = ({ url }: PdfRendererProps) => {
   const { width, height, ref } = useResizeDetector();
   const [TotalPages, setTotalPages] = useState<number>(0);
   const [currentPage, setcurrentPage] = useState<number>(1);
+  const [scale, setscale] = useState<number>(1);
+  const [rotation, setrotation] = useState<number>(0);
   const customPageValidator = z.object({
     page: z.string().refine((num) => {
       //refine kiya hai idhar
@@ -46,7 +62,7 @@ const PdfRenderer = ({ url }: PdfRendererProps) => {
   });
 
   return (
-    <div className="flex flex-col w-full h-screen border border-zinc-300 shadow-lg">
+    <div className="flex flex-col w-full border border-zinc-300 shadow-lg">
       <div className="flex items-center justify-between p-4 border-b border-zinc-300">
         <div className="flex gap-1 items-center">
           <Button
@@ -100,18 +116,65 @@ const PdfRenderer = ({ url }: PdfRendererProps) => {
             <ChevronUp />
           </Button>
         </div>
+        <div>
+          <div className="flex items-center">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button className="gap-1.5" aria-label="zoom" variant={"ghost"}>
+                  <Search />
+                  {scale ? scale * 100 + "%" : "100%"}
+                  <ChevronDown className="opacity-[0.5]" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  onSelect={() => {
+                    setscale(1);
+                  }}
+                >
+                  100%
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onSelect={() => {
+                    setscale(1.5);
+                  }}
+                >
+                  150%
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onSelect={() => {
+                    setscale(2);
+                  }}
+                >
+                  200%
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+            <Button
+              variant={"ghost"}
+              onClick={() => {
+                setrotation((prev) => prev + 90);
+              }}
+            >
+              <RotateCw className="w-5" />
+            </Button>
+            <PDFfullscreen />
+          </div>
+        </div>
       </div>
-      <div
-        className="flex-1 relative max-h-max overflow-auto bg-zinc-200"
-        ref={ref}
-      >
-        <SimpleBar autoHide={false}>
+      <SimpleBar autoHide={false} className="max-h-[90vh]">
+        <div
+          className="flex-1 relative bg-zinc-200"
+          ref={ref}
+          style={{ scrollbarWidth: "thin" }}
+        >
           <Document
             file={url}
             className="w-full h-full flex justify-center"
             loading={
               <div className="flex justify-center">
-                <Loader2 className="animate-spin w-6 h-6" />
+                <Loader2 className="animate-spin w-6 h-16" />
               </div>
             }
             onLoadError={() => {
@@ -128,12 +191,13 @@ const PdfRenderer = ({ url }: PdfRendererProps) => {
             <Page
               width={width ? width : 1}
               pageNumber={currentPage}
-              scale={1}
+              scale={scale}
+              rotate={rotation}
               className="shadow-lg w-auto h-auto max-w-full"
             />
           </Document>
-        </SimpleBar>
-      </div>
+        </div>
+      </SimpleBar>
     </div>
   );
 };

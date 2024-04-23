@@ -30,6 +30,7 @@ const Dashboard = () => {
     <MaxWidthWrapper>
       <div className=" pt-14 pb-6 max-w-7xl border-b flex justify-between">
         <h1 className="text-5xl font-bold text-gray-900">My Files</h1>
+
         <UploadButton />
       </div>
       {/*Display file here */}

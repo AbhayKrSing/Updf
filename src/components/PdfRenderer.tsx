@@ -42,7 +42,7 @@ const PdfRenderer = ({ url }: PdfRendererProps) => {
   const [currentPage, setcurrentPage] = useState<number>(1);
   const [scale, setscale] = useState<number>(1);
   const [rotation, setrotation] = useState<number>(0);
-  const [renderedScale, setrenderedScale] = useState<null | number>();
+  const [renderedScale, setrenderedScale] = useState<number>(1);
   const isLoading = scale !== renderedScale;
   const customPageValidator = z.object({
     page: z.string().refine((num) => {
@@ -190,12 +190,41 @@ const PdfRenderer = ({ url }: PdfRendererProps) => {
               setTotalPages(numPages);
             }}
           >
+            {isLoading ? (
+              <Page
+                width={width ? width : 1}
+                pageNumber={currentPage}
+                scale={renderedScale}
+                key={"@" + renderedScale}
+                rotate={rotation}
+                className="shadow-lg w-auto h-auto max-w-full"
+                loading={
+                  <div>
+                    <Loader2 className="w-6" />
+                  </div>
+                }
+              />
+            ) : (
+              ""
+            )}
+
             <Page
               width={width ? width : 1}
               pageNumber={currentPage}
               scale={scale}
               rotate={rotation}
-              className="shadow-lg w-auto h-auto max-w-full"
+              key={"@" + scale}
+              className={
+                isLoading ? "hidden" : "shadow-lg w-auto h-auto max-w-full"
+              }
+              loading={
+                <div>
+                  <Loader2 className="w-6" />
+                </div>
+              }
+              onRenderSuccess={(data) => {
+                setrenderedScale(scale);
+              }}
             />
           </Document>
         </div>

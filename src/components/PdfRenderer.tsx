@@ -42,6 +42,8 @@ const PdfRenderer = ({ url }: PdfRendererProps) => {
   const [currentPage, setcurrentPage] = useState<number>(1);
   const [scale, setscale] = useState<number>(1);
   const [rotation, setrotation] = useState<number>(0);
+  const [renderedScale, setrenderedScale] = useState<null | number>();
+  const isLoading = scale !== renderedScale;
   const customPageValidator = z.object({
     page: z.string().refine((num) => {
       //refine kiya hai idhar
@@ -159,7 +161,7 @@ const PdfRenderer = ({ url }: PdfRendererProps) => {
             >
               <RotateCw className="w-5" />
             </Button>
-            <PDFfullscreen />
+            <PDFfullscreen url={url} currentpage={currentPage} />
           </div>
         </div>
       </div>
@@ -167,7 +169,7 @@ const PdfRenderer = ({ url }: PdfRendererProps) => {
         <div
           className="flex-1 relative bg-zinc-200"
           ref={ref}
-          style={{ scrollbarWidth: "thin" }}
+          style={{ scrollbarWidth: "none" }}
         >
           <Document
             file={url}

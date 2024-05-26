@@ -3,7 +3,7 @@ import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { createUploadthing, type FileRouter } from "uploadthing/next";
 import { UploadThingError } from "uploadthing/server";
 import { PDFLoader } from "langchain/document_loaders/fs/pdf";
-import { OpenAIEmbeddings } from "@langchain/openai";
+import { VoyageEmbeddings } from "langchain/embeddings/voyage";
 import { pc } from "@/lib/Pinecone";
 import { PineconeStore } from "@langchain/pinecone";
 const f = createUploadthing();
@@ -27,7 +27,7 @@ export const ourFileRouter = {
           uploadStatus: "PROCESSING",
         },
       });
-
+      //we need to index uploaded pdf file for sementic query,In order to do so we will do all indexing using langchain just after uploading file in core.ts
       // Here we will use vector database(pinecone) to store all vector of indexed pdf file(after, indexing using langchain)
       try {
         const res = await fetch(file.url);
@@ -38,8 +38,8 @@ export const ourFileRouter = {
         const pagesAmt = docs.length; //no of pages
 
         const pineconeIndex = pc.Index("updf"); //refer to vector db
-        const embeddings = new OpenAIEmbeddings({
-          apiKey: process.env.OPENAI_API_KEY,
+        const embeddings = new VoyageEmbeddings({
+          apiKey: process.env.VOYAGE_AI_KEY, // In Node.js defaults to process.env.VOYAGEAI_API_KEY
         });
         await PineconeStore.fromDocuments(docs, embeddings, {
           //hover to see what do what

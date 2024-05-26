@@ -25,10 +25,10 @@ export const ChatContextProvider = ({ children, fileid }: Props) => {
   const { toast } = useToast();
   const { mutate: sendMessage } = useMutation({
     mutationFn: async ({ message }: { message: string }) => {
-      const res = await fetch("api/message", {
+      const res = await fetch("/api/message", {
         method: "POST",
         body: JSON.stringify({
-          fileid,
+          fileId: fileid,
           message,
         }),
       });

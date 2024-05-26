@@ -11,6 +11,7 @@
   "dependencies": {
     "@hookform/resolvers": "^3.3.4",
     "@kinde-oss/kinde-auth-nextjs": "^2.0.9",
+    "@langchain/community": "^0.2.1",
     "@langchain/google-genai": "^0.0.2",
     "@langchain/openai": "^0.0.28",
     "@langchain/pinecone": "^0.0.4",
@@ -31,6 +32,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
     "date-fns": "^3.5.0",
+    "groq-sdk": "^0.3.3",
     "langchain": "^0.1.36",
     "lucide-react": "^0.291.0",
     "next": "14.0.0",

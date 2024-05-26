@@ -3,6 +3,7 @@ import { trpc } from "@/app/_trpc/client";
 import { Loader2, XSquare } from "lucide-react";
 import ChatInput from "./ChatInput";
 import Messages from "./Messages";
+import { ChatContextProvider } from "./ChatContext";
 interface ChatWrapperProps {
   fileId: string;
 }
@@ -55,13 +56,15 @@ const ChatWrapper = ({ fileId }: ChatWrapperProps) => {
     );
   }
   return (
-    <div className="flex flex-col min-h-full">
-      <div className="flex flex-col justify-center items-center flex-1">
-        <Messages />
-      </div>
+    <ChatContextProvider fileid={fileId}>
+      <div className="flex flex-col min-h-full">
+        <div className="flex flex-col justify-center items-center flex-1">
+          <Messages />
+        </div>
 
-      <ChatInput isDisable />
-    </div>
+        <ChatInput isDisable />
+      </div>
+    </ChatContextProvider>
   );
 };
 

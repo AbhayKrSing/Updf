@@ -6,6 +6,15 @@ import { PineconeStore } from "@langchain/pinecone";
 import { VoyageEmbeddings } from "langchain/embeddings/voyage";
 import { NextRequest, NextResponse } from "next/server";
 import { Groq } from "groq-sdk";
+interface Completion {
+  choices: {
+    [key: string]: {
+      delta: {
+        content: string;
+      };
+    }[];
+  };
+}
 export const POST = async (req: NextRequest, res: NextResponse) => {
   //end point for asking question to pdf
 
@@ -55,6 +64,7 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
     },
     take: 6,
   });
+  //idhar se change karna hai(from here we need to change)
   const contextFromResults = results
     .map((result) => result.pageContent)
     .join("\n");
@@ -69,6 +79,10 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
       role: "assistant",
       content: contextFromResults,
     },
+    {
+      role: "user",
+      content: message, //user question
+    },
   ];
   const groqClient = new Groq({ apiKey: process.env.GORQ_API_KEY });
   const answer = await groqClient.chat.completions.create({
@@ -79,10 +93,6 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
           "The assistant's response should be informed by the context from the user's previous messages, the current user question, and the most relevant content identified by the similarity search.",
       },
       ...combinedContext,
-      {
-        role: "user",
-        content: message, //user question
-      },
     ],
     model: "llama3-8b-8192",
     temperature: 0.5,
@@ -91,19 +101,19 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
     stop: null,
     stream: true,
   });
-  let completions: string = "";
+  const completions: string[] = [];
   for await (const part of answer) {
-    completions += part.choices[0]?.delta?.content; //need to check
-    return NextResponse.json({
-      message: part.choices[0]?.delta?.content || "",
-    });
+    completions.push(part.choices[0].delta.content || "");
   }
   await db.message.create({
     data: {
-      text: completions,
+      text: completions.join(" "),
       isUserMessage: false,
       userId: user.id,
       fileId,
     },
+  });
+  return NextResponse.json({
+    message: completions,
   });
 };

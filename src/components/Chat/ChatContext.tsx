@@ -35,6 +35,7 @@ export const ChatContextProvider = ({ children, fileid }: Props) => {
       if (!res.ok) {
         throw new Error("Failed to send Message");
       }
+      console.log(await res.json());
       return res.body;
     },
   });

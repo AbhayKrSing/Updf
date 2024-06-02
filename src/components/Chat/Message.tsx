@@ -16,13 +16,15 @@ const Message = ({ message, issameUserMessage }: MessageProps) => {
       })}
     >
       <div
-        className={cn(" text-sm my-2 max-w-md py-3 px-2 rounded-md", {
-          "order-1 bg-black text-white": message.isUserMessage,
-          "order-2 bg-zinc-400 text-black": !message.isUserMessage,
+        className={cn(" text-sm my-2 max-w-md py-3 px-2 ", {
+          "order-1 bg-black text-white rounded-l-md rounded-t-md":
+            message.isUserMessage,
+          "order-2 bg-zinc-400 text-black rounded-r-md rounded-t-md":
+            !message.isUserMessage,
         })}
       >
         {typeof message.text == "string" ? (
-          <Markdown className={""}>{message.text}</Markdown>
+          <Markdown>{message.text}</Markdown>
         ) : (
           <div className="w-4">{message.text}</div>
         )}

@@ -165,7 +165,7 @@ const PdfRenderer = ({ url }: PdfRendererProps) => {
           </div>
         </div>
       </div>
-      <SimpleBar autoHide={false} className="max-h-[90vh]">
+      <SimpleBar autoHide={false} className="max-h-[75vh]">
         <div
           className="flex-1 relative bg-zinc-200"
           ref={ref}

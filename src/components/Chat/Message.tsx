@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils";
 import React from "react";
 import Markdown from "react-markdown";
 import { Icons } from "../Icons";
+import { format } from "date-fns";
 interface MessageProps {
   issameUserMessage: boolean;
   message: ExtendedMessage;
@@ -19,12 +20,17 @@ const Message = ({ message, issameUserMessage }: MessageProps) => {
         className={cn(" text-sm my-2 max-w-md py-3 px-2 ", {
           "order-1 bg-black text-white rounded-l-md rounded-t-md":
             message.isUserMessage,
-          "order-2 bg-zinc-400 text-black rounded-r-md rounded-t-md":
+          "order-2 bg-zinc-200 text-black rounded-r-md rounded-t-md":
             !message.isUserMessage,
         })}
       >
         {typeof message.text == "string" ? (
-          <Markdown>{message.text}</Markdown>
+          <>
+            <Markdown>{message.text}</Markdown>
+            <div className={cn("text-[0.65rem] mt-1 text-right text-zinc-400")}>
+              {format(new Date(message.createdAt), "hh:mm")}
+            </div>
+          </>
         ) : (
           <div className="w-4">{message.text}</div>
         )}

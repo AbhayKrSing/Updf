@@ -23,10 +23,10 @@ export const ChatContext = createContext<StreamResponse>({
 });
 
 export const ChatContextProvider = ({ children, fileid }: Props) => {
-  const InputMessage = useRef<string>();
+  const InputMessage = useRef<string>("");
   const utils = trpc.useUtils();
   const [message, setMessage] = useState<string>("");
-  const [isLoading, setisLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const { toast } = useToast();
   const { mutate: sendMessage } = useMutation({
     mutationFn: async ({ message }: { message: string }) => {
@@ -44,6 +44,7 @@ export const ChatContextProvider = ({ children, fileid }: Props) => {
       return res.body;
     },
     onMutate: ({ message }) => {
+      setIsLoading(true);
       //save message of input if anything goes wrong we will set it back to input
       InputMessage.current = message;
       setMessage("");
@@ -51,25 +52,62 @@ export const ChatContextProvider = ({ children, fileid }: Props) => {
       utils.getFileMessages.cancel();
 
       //step2 (get cache data because if anything goes wrong we will show this instead)
-
       const prevMessages = utils.getFileMessages.getInfiniteData();
 
-      // utils.getFileMessages.setInfiniteData(
-      //   {
-      //     fileId: fileid,
-      //     limit: INFINITE_QUERY_LIMIT,
-      //   },
-      //   (old) => {
-      //     if (!old) {
-      //       return {
-      //         pages: [],
-      //         pageParams: [],
-      //       };
-      //     }
-      //     console.log(old);
-      //     return old;
-      //   }
-      // );
+      utils.getFileMessages.setInfiniteData(
+        {
+          fileId: fileid,
+          limit: INFINITE_QUERY_LIMIT,
+        },
+        (old) => {
+          if (!old) {
+            return {
+              pages: [],
+              pageParams: [],
+            };
+          }
+          return {
+            ...old,
+            pages: [
+              {
+                messages: [
+                  {
+                    id: crypto.randomUUID(),
+                    text: message,
+                    createdAt: new Date().toISOString(),
+                    isUserMessage: true,
+                  },
+                  ...old.pages[0].messages,
+                ],
+              },
+              // ...old.pages.slice(1),
+            ],
+          };
+        }
+      );
+      return {
+        prevMessages, //will do more work if needed
+      };
+    },
+    onSettled: () => {
+      setIsLoading(false);
+      utils.getFileMessages.invalidate();
+    },
+    onError: (err, val, context) => {
+      setIsLoading(false);
+      setMessage(InputMessage.current);
+      utils.getFileMessages.setInfiniteData(
+        {
+          fileId: fileid,
+          limit: INFINITE_QUERY_LIMIT,
+        },
+        context?.prevMessages //will do more work if needed
+      );
+      toast({
+        title: "Error",
+        description: "Your message could not be sent. Please try again." + err,
+        variant: "destructive",
+      });
     },
   });
   const addMessage = () => {

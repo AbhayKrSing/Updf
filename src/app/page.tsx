@@ -46,7 +46,7 @@ export default function Home() {
             className="absolute top-0 -z-10 w-[100%] bg-gradient-to-r from-pink-500 via-purple-500  to-pink-500 -translate-x-2 rotate-3 pointer-events-none aspect-[1155/578] overflow-hidden blur-3xl transform-gpu opacity-10"
           ></div>
           <div className={cn("backdrop-blur-sm bg-zinc-500/10 p-2 rounded-lg")}>
-            <img src="assets/shadcn.png" alt="img" />
+            <img src="assets/LandingView.png" alt="img" />
           </div>
         </div>
       </MaxWidthWrapper>
@@ -124,7 +124,7 @@ export default function Home() {
             )}
           >
             <img
-              src="assets/file-upload-preview.jpg"
+              src="assets/file-upload-preview.png"
               alt="img"
               width={1419}
               className="w-[90%] mx-auto"

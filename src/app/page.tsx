@@ -5,6 +5,9 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { trpc } from "./_trpc/client";
+import LandingView from "../../public/assets/LandingView.png";
+import fileUploadPreview from "../../public/assets/file-upload-preview.png";
+import Image from "next/image";
 // import { serverClient } from "./_trpc/serverClient";
 export default function Home() {
   // const data = await serverClient.getUserName()   //To use in server side (make fn async)
@@ -46,7 +49,7 @@ export default function Home() {
             className="absolute top-0 -z-10 w-[100%] bg-gradient-to-r from-pink-500 via-purple-500  to-pink-500 -translate-x-2 rotate-3 pointer-events-none aspect-[1155/578] overflow-hidden blur-3xl transform-gpu opacity-10"
           ></div>
           <div className={cn("backdrop-blur-sm bg-zinc-500/10 p-2 rounded-lg")}>
-            <img src="assets/LandingView.png" alt="img" />
+            <Image src={LandingView} alt="img" />
           </div>
         </div>
       </MaxWidthWrapper>
@@ -123,8 +126,8 @@ export default function Home() {
               "backdrop-blur-sm bg-zinc-500/10 p-2 rounded-lg mx-auto"
             )}
           >
-            <img
-              src="assets/file-upload-preview.png"
+            <Image
+              src={fileUploadPreview}
               alt="img"
               width={1419}
               className="w-[90%] mx-auto"

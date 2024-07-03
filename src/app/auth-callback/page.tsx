@@ -2,7 +2,7 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import { trpc } from "../_trpc/client";
 import { Loader2 } from "lucide-react";
-const page = () => {
+const Page = () => {
   const router = useRouter();
   const searchParams = useSearchParams(); //useful
   const origin = searchParams.get("origin");
@@ -37,4 +37,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

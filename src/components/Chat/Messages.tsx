@@ -1,15 +1,20 @@
+"use client";
+
 import { trpc } from "@/app/_trpc/client";
 import { INFINITE_QUERY_LIMIT } from "@/config/Infinite_query";
 import { Loader2, MessageSquare } from "lucide-react";
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import Message from "./Message";
 import Skeleton from "react-loading-skeleton";
 import { ChatContext } from "./ChatContext";
-
+import { useInView } from "react-intersection-observer";
 interface MessageProps {
   fileId: string;
 }
 const Messages = ({ fileId }: MessageProps) => {
+  const { ref, inView, entry } = useInView({
+    threshold: 0,
+  });
   const loadingMessages = {
     id: "loading-message",
     createdAt: new Date().toISOString(),
@@ -37,11 +42,13 @@ const Messages = ({ fileId }: MessageProps) => {
     ...(isLoading ? [loadingMessages] : []),
     ...(messages ?? []),
   ];
+  useEffect(() => {
+    if (inView) {
+      fetchNextPage();
+    }
+  }, [inView]);
   return (
-    <div
-      className="flex max-h-[calc(85vh)] flex-1  border-zinc-200 flex-col-reverse overflow-y-auto gap-1"
-      style={{ scrollbarWidth: "none" }}
-    >
+    <div className="flex max-h-[calc(85vh)] flex-1  border-zinc-200 flex-col-reverse overflow-y-auto gap-1">
       {combinedMessages && combinedMessages.length > 0 ? (
         combinedMessages.map((message, i) => {
           const issameUserMessage = //to check logic here
@@ -50,6 +57,7 @@ const Messages = ({ fileId }: MessageProps) => {
           if (combinedMessages.length - 1 == i) {
             return (
               <Message
+                ref={ref}
                 key={message.id}
                 issameUserMessage={issameUserMessage}
                 message={message}

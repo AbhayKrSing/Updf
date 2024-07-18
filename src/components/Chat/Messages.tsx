@@ -48,7 +48,10 @@ const Messages = ({ fileId }: MessageProps) => {
     }
   }, [inView]);
   return (
-    <div className="flex max-h-[calc(85vh)] flex-1  border-zinc-200 flex-col-reverse overflow-y-auto gap-1">
+    <div
+      className="flex max-h-[calc(85vh)] flex-1  border-zinc-200 flex-col-reverse overflow-y-auto gap-1"
+      style={{ scrollbarWidth: "thin" }}
+    >
       {combinedMessages && combinedMessages.length > 0 ? (
         combinedMessages.map((message, i) => {
           const issameUserMessage = //to check logic here

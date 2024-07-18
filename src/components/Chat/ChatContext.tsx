@@ -40,7 +40,6 @@ export const ChatContextProvider = ({ children, fileid }: Props) => {
       if (!res.ok) {
         throw new Error("Failed to send Message");
       }
-      console.log(await res.json());
       return res.body;
     },
     onMutate: ({ message }) => {
@@ -80,7 +79,7 @@ export const ChatContextProvider = ({ children, fileid }: Props) => {
                   ...old.pages[0].messages,
                 ],
               },
-              // ...old.pages.slice(1),
+              ...old.pages.slice(1),
             ],
           };
         }
@@ -89,8 +88,92 @@ export const ChatContextProvider = ({ children, fileid }: Props) => {
         prevMessages, //will do more work if needed
       };
     },
-    onSettled: () => {
+    onSuccess: async (stream) => {
+      if (!stream) {
+        toast({
+          title: "Error",
+          description: "Your message could not be sent. Please try again.",
+          variant: "destructive",
+        });
+        return stream;
+      }
+      const reader = stream.getReader();
+      const decoder = new TextDecoder();
+      let done = false;
+      let accumulatedText = "";
+      let tempMessageId = "temp-id";
+
+      // Update the UI with a temporary message initially
+      utils.getFileMessages.setInfiniteData(
+        {
+          fileId: fileid,
+          limit: INFINITE_QUERY_LIMIT,
+        },
+        (old) => {
+          if (!old) {
+            return {
+              pages: [],
+              pageParams: [],
+            };
+          }
+          return {
+            ...old,
+            pages: [
+              {
+                messages: [
+                  {
+                    id: tempMessageId,
+                    text: "",
+                    createdAt: new Date().toISOString(),
+                    isUserMessage: false,
+                  },
+                  ...old.pages[0].messages,
+                ],
+              },
+              ...old.pages.slice(1),
+            ],
+          };
+        }
+      );
       setIsLoading(false);
+      while (!done) {
+        const { value, done: doneReading } = await reader.read();
+        done = doneReading;
+        const chunk = decoder.decode(value, { stream: true });
+        accumulatedText += chunk;
+
+        // Update the UI with the streamed message progressively
+        utils.getFileMessages.setInfiniteData(
+          {
+            fileId: fileid,
+            limit: INFINITE_QUERY_LIMIT,
+          },
+          (old) => {
+            if (!old) {
+              return {
+                pages: [],
+                pageParams: [],
+              };
+            }
+            return {
+              ...old,
+              pages: [
+                {
+                  messages: old.pages[0].messages.map((msg) =>
+                    msg.id === tempMessageId
+                      ? { ...msg, text: accumulatedText }
+                      : msg
+                  ),
+                },
+                ...old.pages.slice(1),
+              ],
+            };
+          }
+        );
+      }
+    },
+
+    onSettled: () => {
       utils.getFileMessages.invalidate();
     },
     onError: (err, val, context) => {

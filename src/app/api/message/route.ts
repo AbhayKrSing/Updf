@@ -6,15 +6,7 @@ import { PineconeStore } from "@langchain/pinecone";
 import { VoyageEmbeddings } from "langchain/embeddings/voyage";
 import { NextRequest, NextResponse } from "next/server";
 import { Groq } from "groq-sdk";
-interface Completion {
-  choices: {
-    [key: string]: {
-      delta: {
-        content: string;
-      };
-    }[];
-  };
-}
+
 export const POST = async (req: NextRequest, res: NextResponse) => {
   //end point for asking question to pdf
 
@@ -101,19 +93,32 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
     stop: null,
     stream: true,
   });
-  const completions: string[] = [];
-  for await (const part of answer) {
-    completions.push(part.choices[0].delta.content || "");
-  }
-  await db.message.create({
-    data: {
-      text: completions.join(" "),
-      isUserMessage: false,
-      userId: user.id,
-      fileId,
+  const stream = new ReadableStream({
+    async start(controller) {
+      const encoder = new TextEncoder();
+      let fullText = ""; // Initialize a variable to accumulate the text
+
+      for await (const part of answer) {
+        const text = part.choices[0].delta.content || "";
+        fullText += text; // Accumulate the text
+        controller.enqueue(encoder.encode(text));
+      }
+
+      // After the loop completes, store the accumulated text in the database
+      await db.message.create({
+        data: {
+          text: fullText, // Store the accumulated text
+          isUserMessage: false,
+          userId: user.id,
+          fileId,
+        },
+      });
+
+      controller.close();
     },
   });
-  return NextResponse.json({
-    message: completions,
+
+  return new Response(stream, {
+    headers: { "Content-Type": "text/event-stream" },
   });
 };

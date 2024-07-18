@@ -15,7 +15,7 @@ const ChatInput = ({ isDisable }: ChatInputProps) => {
     <form className="relative border rounded-md">
       <div className="flex">
         <Textarea
-          maxRows={3}
+          maxRows={2}
           rows={1}
           placeholder="Type Something to chat..."
           autoFocus
@@ -25,6 +25,7 @@ const ChatInput = ({ isDisable }: ChatInputProps) => {
           ref={textAreaRef}
           onKeyDown={(e) => {
             if (e.key == "Enter" && !e.shiftKey) {
+              e.preventDefault();
               addMessage();
               textAreaRef.current?.focus;
             }

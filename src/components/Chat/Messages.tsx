@@ -46,7 +46,7 @@ const Messages = ({ fileId }: MessageProps) => {
     if (inView) {
       fetchNextPage();
     }
-  }, [inView]);
+  }, [inView, fetchNextPage]);
   return (
     <div
       className="flex max-h-[calc(85vh)] flex-1  border-zinc-200 flex-col-reverse overflow-y-auto gap-1"

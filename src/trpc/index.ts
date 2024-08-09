@@ -152,5 +152,16 @@ export const appRouter = router({
         nextCursor,
       };
     }),
+  createStripeSessions: privateProcedure
+    .input(
+      z.object({
+        limit: z.number().min(1).max(100).nullish(),
+        cursor: z.string().nullish(),
+        fileId: z.string(),
+      })
+    )
+    .query(({ ctx }) => {
+      const { userId } = ctx;
+    }),
 });
 export type AppRouter = typeof appRouter;
